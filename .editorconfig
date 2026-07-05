@@ -1,0 +1,11 @@
+root = true
+
+[*.cs]
+dotnet_diagnostic.IDE0003.severity = none
+dotnet_diagnostic.IDE0004.severity = none
+dotnet_diagnostic.IDE0005.severity = none
+dotnet_diagnostic.IDE0006.severity = none
+dotnet_diagnostic.IDE0007.severity = none
+dotnet_diagnostic.IDE0008.severity = none
+dotnet_diagnostic.IDE0009.severity = none
+csharp_style_namespace_declarations = file_scoped:suggestion

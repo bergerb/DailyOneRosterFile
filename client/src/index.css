@@ -1,0 +1,59 @@
+:root {
+  --bg: #f3efe8;
+  --surface: rgba(255, 255, 255, 0.78);
+  --text: #544f5e;
+  --text-strong: #111827;
+  --muted: #6b7280;
+  --accent: #0f766e;
+  --shadow-soft:
+    0 22px 60px rgba(15, 23, 42, 0.08), 0 10px 20px rgba(15, 23, 42, 0.05);
+  --shadow-strong:
+    0 30px 90px rgba(15, 23, 42, 0.15), 0 12px 30px rgba(15, 23, 42, 0.08);
+  --sans:
+    'Aptos', 'Segoe UI Variable Text', 'Segoe UI', 'Bahnschrift', system-ui,
+    sans-serif;
+  --heading:
+    'Segoe UI Variable Display', 'Aptos Display', 'Bahnschrift', system-ui,
+    sans-serif;
+
+  font-family: var(--sans);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(15, 118, 110, 0.12), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(249, 115, 22, 0.1), transparent 28%),
+    linear-gradient(180deg, #f7f3ec 0%, #efe8dd 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+  min-height: 100vh;
+}

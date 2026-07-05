@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.API
+    container_name: daily-oneroster-app
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+    volumes:
+      - generated_files:/app/GeneratedFiles
+    restart: unless-stopped
+
+volumes:
+  generated_files:

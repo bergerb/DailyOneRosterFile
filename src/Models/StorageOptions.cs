@@ -13,6 +13,7 @@ public sealed class StorageOptions
     public string MinioAccessKey { get; set; } = string.Empty;
     public string MinioSecretKey { get; set; } = string.Empty;
     public string MinioBucketName { get; set; } = "generated-files";
+    public bool UseBlobStorage { get; set; } = false;
     public string BlobConnectionString { get; set; } = string.Empty;
     public string BlobContainerName { get; set; } = "generated-files";
 }

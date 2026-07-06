@@ -35,7 +35,7 @@ Create a new public-facing website that generates and provides a downloadable "O
     - [x] Build landing page UI.
     - [x] Integrate EduPortal logos.
     - [x] Connect frontend to backend download API.
-    - [ ] Add short-lived signed download token flow for the file endpoint.
+    - [x] Add short-lived signed download token flow for the file endpoint.
 - [ ] **Infrastructure & Deployment**
     - [x] Create integrated `Dockerfile.API` to build frontend and backend into one runtime image.
     - [x] Update `docker-compose.yml` to run a single `app` service for the integrated image.

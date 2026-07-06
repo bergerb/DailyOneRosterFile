@@ -1,53 +1,59 @@
-using System.IO;
-using System.Linq;
+using DailyOneRosterFile.Api.Interfaces;
+using DailyOneRosterFile.Api.Models;
 using Microsoft.Extensions.Options;
-using Backend.Models;
 using OneRosterSampleDataGenerator;
 
-namespace Backend.Services
+namespace DailyOneRosterFile.Api.Services;
+
+public class OneRosterFileGenerator : IOneRosterFileGenerator
 {
-    public interface IOneRosterFileGenerator
+    private readonly string _storagePath;
+    private readonly IStorageService _storage;
+    private readonly StorageOptions _storageOptions;
+
+    public OneRosterFileGenerator(IOptions<StorageOptions> storageOptions, IStorageService storage)
     {
-        Task<string> GenerateDailyFileAsync();
+        _storageOptions = storageOptions.Value;
+        _storagePath = _storageOptions.GeneratedFilesPath;
+        _storage = storage;
     }
 
-    public class OneRosterFileGenerator : IOneRosterFileGenerator
+    public async Task<string> GenerateDailyFileAsync()
     {
-        private readonly string _storagePath;
+        var generationBasePath = AppContext.BaseDirectory;
 
-        public OneRosterFileGenerator(IOptions<StorageOptions> storageOptions)
+        var previousDirectory = Directory.GetCurrentDirectory();
+        Directory.SetCurrentDirectory(generationBasePath);
+
+        var generator = new OneRoster();
+        try
         {
-            _storagePath = storageOptions.Value.GeneratedFilesPath;
+            generator.OutputOneRosterZipFile();
+        }
+        finally
+        {
+            Directory.SetCurrentDirectory(previousDirectory);
         }
 
-        public Task<string> GenerateDailyFileAsync()
+        var generatedFile = Directory.GetFiles(generationBasePath, "*.zip")
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .FirstOrDefault()
+            ?? throw new InvalidOperationException("OneRoster generator did not produce a zip file.");
+
+        if (_storageOptions.UseMinio)
+        {
+            byte[] content = File.ReadAllBytes(generatedFile);
+            var fileName = Path.GetFileName(generatedFile);
+            var uploadedName = await _storage.UploadFileAsync(fileName, content);
+            File.Delete(generatedFile);
+            return uploadedName;
+        }
+        else
         {
             Directory.CreateDirectory(_storagePath);
-
-            var generationBasePath = AppContext.BaseDirectory;
-
-            var previousDirectory = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(generationBasePath);
-
-            var generator = new OneRoster();
-            try
-            {
-                generator.OutputOneRosterZipFile();
-            }
-            finally
-            {
-                Directory.SetCurrentDirectory(previousDirectory);
-            }
-
-            var generatedFile = Directory.GetFiles(generationBasePath, "*.zip")
-                .OrderByDescending(File.GetLastWriteTimeUtc)
-                .FirstOrDefault()
-                ?? throw new InvalidOperationException("OneRoster generator did not produce a zip file.");
-
             var destinationPath = Path.Combine(_storagePath, Path.GetFileName(generatedFile));
             File.Move(generatedFile, destinationPath, true);
-
-            return Task.FromResult(destinationPath);
+            return destinationPath;
         }
     }
 }

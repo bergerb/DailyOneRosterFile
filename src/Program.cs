@@ -1,17 +1,30 @@
-using Backend.BackgroundServices;
-using Backend.Models;
-using Backend.Services;
+using DailyOneRosterFile.Api.BackgroundServices;
+using DailyOneRosterFile.Api.Interfaces;
+using DailyOneRosterFile.Api.Models;
+using DailyOneRosterFile.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendDev", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173", "https://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
 builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
-
+builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
+builder.Services.AddSingleton<IStorageService, StorageService>();
 builder.Services.AddSingleton<IOneRosterFileGenerator, OneRosterFileGenerator>();
 builder.Services.AddHostedService<DailyFileGenerationWorker>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
@@ -19,11 +32,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseCors("FrontendDev");
 }
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
-app.UseHttpsRedirection();
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 

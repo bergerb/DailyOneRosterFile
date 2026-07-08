@@ -10,7 +10,7 @@ WORKDIR /src
 COPY src/DailyOneRosterFile.Api.csproj ./
 COPY NuGet.Config ./
 ARG GITHUB_TOKEN
-RUN dotnet nuget add source https://nuget.pkg.github.com/bergerb/index.json -n bergerb-packages -u bergerb -p $GITHUB_TOKEN --store-password-in-clear-text --configfile NuGet.Config
+RUN dotnet nuget update source bergerb-packages -u bergerb -p $GITHUB_TOKEN --store-password-in-clear-text --configfile NuGet.Config
 RUN dotnet restore DailyOneRosterFile.Api.csproj --configfile NuGet.Config
 COPY src/ ./
 RUN dotnet publish DailyOneRosterFile.Api.csproj -c Release -o /app/publish

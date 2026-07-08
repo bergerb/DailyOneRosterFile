@@ -58,8 +58,7 @@ function App() {
             <p className="eyebrow eyebrow-accent">K-12 roster export</p>
             <h1 id="hero-title">A clean OneRoster 1.1 file, delivered without friction.</h1>
             <p className="hero-text">
-              Download today's K-12 OneRoster 1.1 file from a focused, modern
-              landing page. No navigation maze, no extra steps, no distractions.
+              Download today's K-12 OneRoster 1.1 file now!
             </p>
 
             <div className="cta-row">

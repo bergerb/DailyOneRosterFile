@@ -131,7 +131,7 @@
 }
 
 .hero {
-  flex: 1;
+  flex: 0;
   display: grid;
   align-items: center;
   grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
@@ -140,7 +140,7 @@
 }
 
 .hero-copy {
-  max-width: 40rem;
+  max-width: 55rem;
   animation: rise 700ms ease-out both;
 }
 

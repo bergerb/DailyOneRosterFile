@@ -61,6 +61,6 @@ jobs:
           script: |
             export HOME=/home/deployer
             docker pull ${{ needs.publish.outputs.image }}
-            docker stop dailyoneroosterfile || true
-            docker rm dailyoneroosterfile || true
-            docker run -d -p 5000:5000 --name dailyoneroosterfile ${{ needs.publish.outputs.image }}
+            docker stop dailyonerosterfile || true
+            docker rm dailyonerosterfile || true
+            docker run -d -p 5000:5000 --name dailyonerosterfile ${{ needs.publish.outputs.image }}

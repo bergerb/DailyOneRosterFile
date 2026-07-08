@@ -58,9 +58,18 @@ jobs:
           username: deployer
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_PORT }}
+          envs: MINIO_SECRET_KEY,TOKEN_SECRET,IMAGE
           script: |
             export HOME=/home/deployer
-            docker pull ${{ needs.publish.outputs.image }}
+            docker pull $IMAGE
             docker stop dailyonerosterfile || true
             docker rm dailyonerosterfile || true
-            docker run -d -p 5000:5000 --name dailyonerosterfile ${{ needs.publish.outputs.image }}
+            docker run -d -p 5000:5000 --name dailyonerosterfile \
+              -e ASPNETCORE_ENVIRONMENT=Test \
+              -e Storage__MinioSecretKey=$MINIO_SECRET_KEY \
+              -e Storage__TokenSecret=$TOKEN_SECRET \
+              $IMAGE
+        env:
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+          IMAGE: ${{ needs.publish.outputs.image }}

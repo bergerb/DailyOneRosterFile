@@ -65,6 +65,7 @@ jobs:
             docker stop dailyonerosterfile || true
             docker rm dailyonerosterfile || true
             docker run -d -p 5000:5000 --name dailyonerosterfile \
+              --network bergerb-infrastructure_default \
               -e ASPNETCORE_ENVIRONMENT=Test \
               -e Storage__MinioSecretKey=$MINIO_SECRET_KEY \
               -e Storage__TokenSecret=$TOKEN_SECRET \

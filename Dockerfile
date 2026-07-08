@@ -9,8 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS backend-build
 WORKDIR /src
 COPY src/DailyOneRosterFile.Api.csproj ./
 COPY NuGet.Config ./
-ARG GITHUB_TOKEN
-RUN dotnet nuget add source https://nuget.pkg.github.com/bergerb/index.json -n bergerb-packages -u bergerb -p $GITHUB_TOKEN --store-password-in-clear-text --configfile NuGet.Config
+RUN --mount=type=secret,id=github_token sh -c 'dotnet nuget add source https://nuget.pkg.github.com/bergerb/index.json -n bergerb-packages -u bergerb -p "$(cat /run/secrets/github_token)" --store-password-in-clear-text --configfile NuGet.Config'
 RUN dotnet restore DailyOneRosterFile.Api.csproj --configfile NuGet.Config
 COPY src/ ./
 RUN dotnet publish DailyOneRosterFile.Api.csproj -c Release -o /app/publish

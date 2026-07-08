@@ -1,0 +1,64 @@
+name: VPS Docker Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '10.0'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '--no-ci')"
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.image.outputs.value }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set build number and image name
+        id: image
+        run: |
+          BUILD_NUMBER=${{ github.run_number }}
+          IMAGE_NAME=ghcr.io/${GITHUB_REPOSITORY,,}:${BUILD_NUMBER}
+          echo "BUILD_NUMBER=${BUILD_NUMBER}" >> $GITHUB_ENV
+          echo "value=${IMAGE_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.image.outputs.value }}
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: publish
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: deployer
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            export HOME=/home/deployer
+            docker pull ${{ needs.publish.outputs.image }}
+            docker stop dailyoneroosterfile || true
+            docker rm dailyoneroosterfile || true
+            docker run -d -p 5000:5000 --name dailyoneroosterfile ${{ needs.publish.outputs.image }}

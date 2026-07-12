@@ -27,12 +27,12 @@
       },
       "OneRosterSampleDataGenerator": {
         "type": "Direct",
-        "requested": "[1.0.18-beta, )",
-        "resolved": "1.0.18-beta",
-        "contentHash": "s7CnXfhxoM4GsXz/3V89fGUoUHqIEjO6cP8RjuZYogXJouJBLA24eltoFLcJV+LkBaNOYoPlHT0L4NQgvHFscw==",
+        "requested": "[2.1.1-beta, )",
+        "resolved": "2.1.1-beta",
+        "contentHash": "HakmnJAZSsJxtvUIQKR5V0M+c/fmDyDmxc3FObutv/oYWuLJ9ko8pU5sb3JzCy8XL2Ybeo8iHpymRBIJcTun5g==",
         "dependencies": {
-          "Bogus": "34.0.1",
-          "CsvHelper": "31.0.2"
+          "Bogus": "35.6.5",
+          "CsvHelper": "33.1.0"
         }
       },
       "Swashbuckle.AspNetCore": {
@@ -49,8 +49,8 @@
       },
       "Bogus": {
         "type": "Transitive",
-        "resolved": "34.0.1",
-        "contentHash": "49iq7QrD0wb7V4/FcK8p3dWdJxNUbojaqK9L6KRvdikIuRjt38EsNp7QXICcYdbYw01K8BHUdxlnTNn/YX3qDA=="
+        "resolved": "35.6.5",
+        "contentHash": "2FGZn+aAVHjmCgClgmGkTDBVZk0zkLvAKGaxEf5JL6b3i9JbHTE4wnuY4vHCuzlCmJdU6VZjgDfHwmYkQF8VAA=="
       },
       "CommunityToolkit.HighPerformance": {
         "type": "Transitive",

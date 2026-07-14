@@ -26,16 +26,18 @@ public class OneRosterFileGeneratorTests : IDisposable
     [Fact]
     public async Task GenerateDailyFileAsync_LocalStorage_SavesToVariantSubfolder()
     {
+        // Arrange
         var storageOptions = Options.Create(new StorageOptions
         {
             UseMinio = false,
             GeneratedFilesPath = _tempDir
         });
-
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
+        // Act
         await generator.GenerateDailyFileAsync(FileVariant.Small, 3);
 
+        // Assert
         var expectedPath = Path.Combine(_tempDir, FileVariant.Small, "OneRoster.zip");
         Assert.True(File.Exists(expectedPath), $"Expected file at {expectedPath}");
         Assert.True(new FileInfo(expectedPath).Length > 0, "File should not be empty");
@@ -44,16 +46,18 @@ public class OneRosterFileGeneratorTests : IDisposable
     [Fact]
     public async Task GenerateDailyFileAsync_LargeVariant_SavesToLargeSubfolder()
     {
+        // Arrange
         var storageOptions = Options.Create(new StorageOptions
         {
             UseMinio = false,
             GeneratedFilesPath = _tempDir
         });
-
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
+        // Act
         await generator.GenerateDailyFileAsync(FileVariant.Large, 22);
 
+        // Assert
         var expectedPath = Path.Combine(_tempDir, FileVariant.Large, "OneRoster.zip");
         Assert.True(File.Exists(expectedPath), $"Expected file at {expectedPath}");
     }
@@ -61,20 +65,21 @@ public class OneRosterFileGeneratorTests : IDisposable
     [Fact]
     public async Task GenerateDailyFileAsync_Minio_UploadsWithCorrectKey()
     {
+        // Arrange
         var storageOptions = Options.Create(new StorageOptions
         {
             UseMinio = true,
             GeneratedFilesPath = _tempDir
         });
-
         _storageMock
             .Setup(s => s.UploadFileAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
             .ReturnsAsync("ok");
-
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
+        // Act
         await generator.GenerateDailyFileAsync(FileVariant.Small, 3);
 
+        // Assert
         _storageMock.Verify(
             s => s.UploadFileAsync(
                 $"{FileVariant.Small}/OneRoster.zip",
@@ -85,20 +90,21 @@ public class OneRosterFileGeneratorTests : IDisposable
     [Fact]
     public async Task GenerateDailyFileAsync_Minio_LargeVariant_UploadsWithLargeKey()
     {
+        // Arrange
         var storageOptions = Options.Create(new StorageOptions
         {
             UseMinio = true,
             GeneratedFilesPath = _tempDir
         });
-
         _storageMock
             .Setup(s => s.UploadFileAsync(It.IsAny<string>(), It.IsAny<byte[]>()))
             .ReturnsAsync("ok");
-
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
+        // Act
         await generator.GenerateDailyFileAsync(FileVariant.Large, 22);
 
+        // Assert
         _storageMock.Verify(
             s => s.UploadFileAsync(
                 $"{FileVariant.Large}/OneRoster.zip",

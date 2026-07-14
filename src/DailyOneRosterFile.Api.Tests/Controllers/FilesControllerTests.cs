@@ -25,10 +25,13 @@ public class FilesControllerTests
     [InlineData("")]
     public async Task DownloadLatestFile_InvalidVariant_ReturnsBadRequest(string variant)
     {
+        // Arrange
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile(variant);
 
+        // Assert
         var badRequest = Assert.IsType<BadRequestObjectResult>(result);
         Assert.Contains("Invalid variant", badRequest.Value?.ToString());
     }
@@ -36,34 +39,39 @@ public class FilesControllerTests
     [Fact]
     public async Task DownloadLatestFile_SmallVariant_NoFiles_ReturnsNotFound()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync("small/OneRoster.zip"))
             .ReturnsAsync(false);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile(FileVariant.Small);
 
+        // Assert
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
     public async Task DownloadLatestFile_LargeVariant_NoFiles_ReturnsNotFound()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync("large/OneRoster.zip"))
             .ReturnsAsync(false);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile(FileVariant.Large);
 
+        // Assert
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
     public async Task DownloadLatestFile_SmallVariant_FileExists_ReturnsFile()
     {
+        // Arrange
         byte[] expectedBytes = [1, 2, 3, 4];
         _storageMock
             .Setup(s => s.FileExistsAsync("small/OneRoster.zip"))
@@ -71,11 +79,12 @@ public class FilesControllerTests
         _storageMock
             .Setup(s => s.DownloadFileAsync("small/OneRoster.zip"))
             .ReturnsAsync(expectedBytes);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile(FileVariant.Small);
 
+        // Assert
         var fileResult = Assert.IsType<FileContentResult>(result);
         Assert.Equal(expectedBytes, fileResult.FileContents);
         Assert.Equal("application/zip", fileResult.ContentType);
@@ -85,6 +94,7 @@ public class FilesControllerTests
     [Fact]
     public async Task DownloadLatestFile_LargeVariant_FileExists_ReturnsFile()
     {
+        // Arrange
         byte[] expectedBytes = [5, 6, 7, 8];
         _storageMock
             .Setup(s => s.FileExistsAsync("large/OneRoster.zip"))
@@ -92,11 +102,12 @@ public class FilesControllerTests
         _storageMock
             .Setup(s => s.DownloadFileAsync("large/OneRoster.zip"))
             .ReturnsAsync(expectedBytes);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile(FileVariant.Large);
 
+        // Assert
         var fileResult = Assert.IsType<FileContentResult>(result);
         Assert.Equal(expectedBytes, fileResult.FileContents);
     }
@@ -104,17 +115,19 @@ public class FilesControllerTests
     [Fact]
     public async Task DownloadLatestFile_DefaultsToLarge()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync("large/OneRoster.zip"))
             .ReturnsAsync(true);
         _storageMock
             .Setup(s => s.DownloadFileAsync("large/OneRoster.zip"))
             .ReturnsAsync([1]);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.DownloadLatestFile();
 
+        // Assert
         Assert.IsType<FileContentResult>(result);
         _storageMock.Verify(s => s.FileExistsAsync("large/OneRoster.zip"), Times.Once);
     }
@@ -122,20 +135,23 @@ public class FilesControllerTests
     [Fact]
     public async Task GetDownloadToken_NoFiles_ReturnsNotFound()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync(It.IsAny<string>()))
             .ReturnsAsync(false);
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.GetDownloadToken();
 
+        // Assert
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
     [Fact]
     public async Task GetDownloadToken_SmallFileExists_ReturnsToken()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync("small/OneRoster.zip"))
             .ReturnsAsync(true);
@@ -145,11 +161,12 @@ public class FilesControllerTests
         _tokenMock
             .Setup(t => t.GenerateToken("OneRoster.zip"))
             .Returns("test-token-123");
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.GetDownloadToken();
 
+        // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         var token = okResult.Value?.GetType().GetProperty("token")?.GetValue(okResult.Value);
         Assert.Equal("test-token-123", token);
@@ -158,6 +175,7 @@ public class FilesControllerTests
     [Fact]
     public async Task GetDownloadToken_LargeFileExists_ReturnsToken()
     {
+        // Arrange
         _storageMock
             .Setup(s => s.FileExistsAsync("small/OneRoster.zip"))
             .ReturnsAsync(false);
@@ -167,11 +185,12 @@ public class FilesControllerTests
         _tokenMock
             .Setup(t => t.GenerateToken("OneRoster.zip"))
             .Returns("test-token-456");
-
         var controller = CreateController();
 
+        // Act
         var result = await controller.GetDownloadToken();
 
+        // Assert
         var okResult = Assert.IsType<OkObjectResult>(result);
         var token = okResult.Value?.GetType().GetProperty("token")?.GetValue(okResult.Value);
         Assert.Equal("test-token-456", token);

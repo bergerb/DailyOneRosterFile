@@ -32,7 +32,12 @@ public class ValidateTokenFilter : IActionFilter
             return;
         }
 
-        // Store the token in HttpContext.Items for use in the action
+        if (!_tokenService.ValidateToken(token!, "OneRoster.zip"))
+        {
+            context.Result = new UnauthorizedResult();
+            return;
+        }
+
         context.HttpContext.Items["Token"] = token;
     }
 

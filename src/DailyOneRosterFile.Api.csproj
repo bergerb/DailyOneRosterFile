@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
     <UserSecretsId>0187976f-1ca7-4173-b54e-47c082ea1a11</UserSecretsId>
+    <DefaultItemExcludes>$(DefaultItemExcludes);DailyOneRosterFile.Api.Tests\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>

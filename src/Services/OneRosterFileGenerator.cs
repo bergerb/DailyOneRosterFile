@@ -18,14 +18,14 @@ public class OneRosterFileGenerator : IOneRosterFileGenerator
         _storage = storage;
     }
 
-    public async Task<string> GenerateDailyFileAsync()
+    public async Task GenerateDailyFileAsync(string variant, int schoolCount)
     {
         var generationBasePath = AppContext.BaseDirectory;
 
         var previousDirectory = Directory.GetCurrentDirectory();
         Directory.SetCurrentDirectory(generationBasePath);
 
-        var generator = new OneRoster();
+        var generator = new OneRoster(new() { SchoolCount = schoolCount });
         try
         {
             generator.OutputOneRosterZipFile();
@@ -43,17 +43,16 @@ public class OneRosterFileGenerator : IOneRosterFileGenerator
         if (_storageOptions.UseMinio)
         {
             byte[] content = File.ReadAllBytes(generatedFile);
-            var fileName = Path.GetFileName(generatedFile);
-            var uploadedName = await _storage.UploadFileAsync(fileName, content);
+            var key = $"{variant}/OneRoster.zip";
+            await _storage.UploadFileAsync(key, content);
             File.Delete(generatedFile);
-            return uploadedName;
         }
         else
         {
-            Directory.CreateDirectory(_storagePath);
-            var destinationPath = Path.Combine(_storagePath, Path.GetFileName(generatedFile));
+            var subfolderPath = Path.Combine(_storagePath, variant);
+            Directory.CreateDirectory(subfolderPath);
+            var destinationPath = Path.Combine(subfolderPath, "OneRoster.zip");
             File.Move(generatedFile, destinationPath, true);
-            return destinationPath;
         }
     }
 }

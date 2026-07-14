@@ -20,6 +20,7 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.Configure<StorageOptions>(builder.Configuration.GetSection(StorageOptions.SectionName));
+builder.Services.Configure<FileVariantOptions>(builder.Configuration.GetSection(FileVariantOptions.SectionName));
 builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
 builder.Services.AddSingleton<IStorageService, StorageService>();
 builder.Services.AddSingleton<IOneRosterFileGenerator, OneRosterFileGenerator>();

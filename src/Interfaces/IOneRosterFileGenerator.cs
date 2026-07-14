@@ -2,5 +2,5 @@ namespace DailyOneRosterFile.Api.Interfaces;
 
 public interface IOneRosterFileGenerator
 {
-    Task<string> GenerateDailyFileAsync();
+    Task GenerateDailyFileAsync(string variant, int schoolCount);
 }

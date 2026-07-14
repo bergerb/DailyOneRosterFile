@@ -10,9 +10,11 @@ public class BlobStorageService : IBlobStorageService
 {
     private readonly IMinioClient? _minioClient;
     private readonly string _bucketName;
+    private readonly ILogger<BlobStorageService> _logger;
 
-    public BlobStorageService(IOptions<StorageOptions> storageOptions)
+    public BlobStorageService(IOptions<StorageOptions> storageOptions, ILogger<BlobStorageService> logger)
     {
+        _logger = logger;
         var options = storageOptions.Value;
         _bucketName = options.MinioBucketName;
 
@@ -112,6 +114,25 @@ public class BlobStorageService : IBlobStorageService
         }
 
         return latestFileName;
+    }
+
+    public async Task<bool> FileExistsAsync(string key)
+    {
+        var client = GetClient();
+        try
+        {
+            var statObjectArgs = new StatObjectArgs()
+                .WithBucket(_bucketName)
+                .WithObject(key);
+
+            await client.StatObjectAsync(statObjectArgs);
+            return true;
+        }
+        catch (Exception ex) when (ex is not InvalidOperationException)
+        {
+            _logger.LogDebug(ex, "Object '{Key}' not found in bucket '{Bucket}'.", key, _bucketName);
+            return false;
+        }
     }
 
     private IMinioClient GetClient()

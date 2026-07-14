@@ -25,11 +25,11 @@ function App() {
   }, [])
 
   const downloadSmallUrl = token
-    ? `${apiBase}/files/latest-oneroster?token=${token}&schoolCount=3`
+    ? `${apiBase}/files/latest-oneroster?token=${token}&variant=small`
     : '';
 
   const downloadLargeUrl = token
-    ? `${apiBase}/files/latest-oneroster?token=${token}&schoolCount=22`
+    ? `${apiBase}/files/latest-oneroster?token=${token}&variant=large`
     : '';
 
   return (

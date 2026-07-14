@@ -1,14 +1,17 @@
 using Cronos;
 using DailyOneRosterFile.Api.Interfaces;
 using DailyOneRosterFile.Api.Models;
+using Microsoft.Extensions.Options;
 
 namespace DailyOneRosterFile.Api.BackgroundServices;
 
 public class DailyFileGenerationWorker(
     IOneRosterFileGenerator generator,
+    IOptions<FileVariantOptions> variantOptions,
     ILogger<DailyFileGenerationWorker> logger) : BackgroundService
 {
     private readonly IOneRosterFileGenerator _generator = generator;
+    private readonly FileVariantOptions _variantOptions = variantOptions.Value;
     private readonly ILogger<DailyFileGenerationWorker> _logger = logger;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -20,8 +23,8 @@ public class DailyFileGenerationWorker(
             try
             {
                 _logger.LogInformation("Starting daily file generation...");
-                await _generator.GenerateDailyFileAsync(FileVariant.SmallSchoolCount);
-                await _generator.GenerateDailyFileAsync(FileVariant.LargeSchoolCount);
+                await _generator.GenerateDailyFileAsync(FileVariant.Small, _variantOptions.SmallSchoolCount);
+                await _generator.GenerateDailyFileAsync(FileVariant.Large, _variantOptions.LargeSchoolCount);
                 _logger.LogInformation("Daily file generation completed successfully.");
             }
             catch (Exception ex)

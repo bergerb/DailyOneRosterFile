@@ -28,9 +28,12 @@ public class FilesController(IOptions<StorageOptions> storageOptions, ITokenServ
 
     [HttpGet("latest-oneroster")]
     [ValidateToken]
-    public async Task<IActionResult> DownloadLatestFile([FromQuery] int schoolCount = FileVariant.LargeSchoolCount)
+    public async Task<IActionResult> DownloadLatestFile([FromQuery] string variant = FileVariant.Large)
     {
-        var variant = FileVariant.GetFolder(schoolCount);
+        if (variant != FileVariant.Small && variant != FileVariant.Large)
+        {
+            return BadRequest($"Invalid variant '{variant}'. Must be '{FileVariant.Small}' or '{FileVariant.Large}'.");
+        }
 
         if (!await FileExistsForVariantAsync(variant))
         {

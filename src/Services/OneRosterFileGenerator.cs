@@ -18,7 +18,7 @@ public class OneRosterFileGenerator : IOneRosterFileGenerator
         _storage = storage;
     }
 
-    public async Task GenerateDailyFileAsync(int schoolCount)
+    public async Task GenerateDailyFileAsync(string variant, int schoolCount)
     {
         var generationBasePath = AppContext.BaseDirectory;
 
@@ -39,8 +39,6 @@ public class OneRosterFileGenerator : IOneRosterFileGenerator
             .OrderByDescending(File.GetLastWriteTimeUtc)
             .FirstOrDefault()
             ?? throw new InvalidOperationException("OneRoster generator did not produce a zip file.");
-
-        var variant = FileVariant.GetFolder(schoolCount);
 
         if (_storageOptions.UseMinio)
         {

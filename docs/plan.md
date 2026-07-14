@@ -36,7 +36,7 @@ Create a new public-facing website that generates and provides a downloadable "O
     - [x] Integrate EduPortal logos.
     - [x] Connect frontend to backend download API.
     - [x] Add short-lived signed download token flow for the file endpoint.
-    - [x] Add small (3 schools) and large (22 schools) download options.
+- [x] Add small (3 schools) and large (22 schools) download options.
 - [ ] **Infrastructure & Deployment**
     - [x] Create integrated `Dockerfile.API` to build frontend and backend into one runtime image.
     - [x] Update `docker-compose.yml` to run a single `app` service for the integrated image.
@@ -54,5 +54,6 @@ Create a new public-facing website that generates and provides a downloadable "O
 - Integration tests should verify that a file is successfully created and then reachable via the API.
 - Deployment model is integrated: one container, one exposed app port (`5000`), shared `generated_files` volume.
 - Hotlink protection should use a short-lived signed token, not JWT auth or a public bearer token.
-- Files are stored in subfolder variants: `small/OneRoster.zip` (3 schools) and `large/OneRoster.zip` (22 schools).
-- A single token is valid for both variants; the token identifies `OneRoster.zip` regardless of size.
+- Files are stored in subfolder variants: `small/OneRoster.zip` and `large/OneRoster.zip`.
+- School counts are configurable via `FileVariant` section in `appsettings.json`.
+- A single token is valid for both variants; the variant is selected via `?variant=small` or `?variant=large` query parameter.

@@ -28,7 +28,7 @@ public class FilesController(IOptions<StorageOptions> storageOptions, ITokenServ
 
     [HttpGet("latest-oneroster")]
     [ValidateToken]
-    public async Task<IActionResult> DownloadLatestFile([FromQuery] int schoolCount = 22)
+    public async Task<IActionResult> DownloadLatestFile([FromQuery] int schoolCount = FileVariant.LargeSchoolCount)
     {
         var variant = FileVariant.GetFolder(schoolCount);
 

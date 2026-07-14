@@ -1,5 +1,6 @@
 using Cronos;
 using DailyOneRosterFile.Api.Interfaces;
+using DailyOneRosterFile.Api.Models;
 
 namespace DailyOneRosterFile.Api.BackgroundServices;
 
@@ -19,8 +20,8 @@ public class DailyFileGenerationWorker(
             try
             {
                 _logger.LogInformation("Starting daily file generation...");
-                await _generator.GenerateDailyFileAsync(3);   // small
-                await _generator.GenerateDailyFileAsync(22);  // large
+                await _generator.GenerateDailyFileAsync(FileVariant.SmallSchoolCount);
+                await _generator.GenerateDailyFileAsync(FileVariant.LargeSchoolCount);
                 _logger.LogInformation("Daily file generation completed successfully.");
             }
             catch (Exception ex)

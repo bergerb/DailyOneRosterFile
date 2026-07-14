@@ -52,7 +52,7 @@ public class OneRosterFileGeneratorTests : IDisposable
 
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
-        await generator.GenerateDailyFileAsync(FileVariant.Large, 3);
+        await generator.GenerateDailyFileAsync(FileVariant.Large, 22);
 
         var expectedPath = Path.Combine(_tempDir, FileVariant.Large, "OneRoster.zip");
         Assert.True(File.Exists(expectedPath), $"Expected file at {expectedPath}");
@@ -97,7 +97,7 @@ public class OneRosterFileGeneratorTests : IDisposable
 
         var generator = new OneRosterFileGenerator(storageOptions, _storageMock.Object);
 
-        await generator.GenerateDailyFileAsync(FileVariant.Large, 3);
+        await generator.GenerateDailyFileAsync(FileVariant.Large, 22);
 
         _storageMock.Verify(
             s => s.UploadFileAsync(

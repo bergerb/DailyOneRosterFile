@@ -24,8 +24,12 @@ function App() {
       .catch(err => console.error('Error fetching token:', err))
   }, [])
 
-  const downloadUrl = token
-    ? `${apiBase}/files/latest-oneroster?token=${token}`
+  const downloadSmallUrl = token
+    ? `${apiBase}/files/latest-oneroster?token=${token}&schoolCount=3`
+    : '';
+
+  const downloadLargeUrl = token
+    ? `${apiBase}/files/latest-oneroster?token=${token}&schoolCount=22`
     : '';
 
   return (
@@ -62,8 +66,17 @@ function App() {
             </p>
 
             <div className="cta-row">
-              <a className="download-button" href={downloadUrl}>
-                <span>Download Today's File</span>
+              <a className="download-button" href={downloadSmallUrl}>
+                <span>Download Small (3 Schools)</span>
+                <span className="download-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" role="presentation" focusable="false">
+                    <path d="M12 4v10m0 0 4-4m-4 4-4-4" />
+                    <path d="M5 19h14" />
+                  </svg>
+                </span>
+              </a>
+              <a className="download-button" href={downloadLargeUrl}>
+                <span>Download Large (22 Schools)</span>
                 <span className="download-arrow" aria-hidden="true">
                   <svg viewBox="0 0 24 24" role="presentation" focusable="false">
                     <path d="M12 4v10m0 0 4-4m-4 4-4-4" />
@@ -107,7 +120,7 @@ function App() {
                 </div>
 
                 <div className="file-card-copy">
-                  <p className="file-name">latest-oneroster.zip</p>
+                  <p className="file-name">OneRoster.zip</p>
                   <p className="file-detail">Prepared for K-12 download</p>
                 </div>
               </div>
@@ -127,7 +140,7 @@ function App() {
                 </div>
                 <div>
                   <dt>Action</dt>
-                  <dd>Single download</dd>
+                  <dd>Small or large download</dd>
                 </div>
               </dl>
             </div>

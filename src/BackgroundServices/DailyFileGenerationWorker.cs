@@ -1,18 +1,14 @@
 using Cronos;
 using DailyOneRosterFile.Api.Interfaces;
-using DailyOneRosterFile.Api.Models;
-using Microsoft.Extensions.Options;
 
 namespace DailyOneRosterFile.Api.BackgroundServices;
 
 public class DailyFileGenerationWorker(
     IOneRosterFileGenerator generator,
-    ILogger<DailyFileGenerationWorker> logger,
-    IOptions<StorageOptions> storageOptions) : BackgroundService
+    ILogger<DailyFileGenerationWorker> logger) : BackgroundService
 {
     private readonly IOneRosterFileGenerator _generator = generator;
     private readonly ILogger<DailyFileGenerationWorker> _logger = logger;
-    private readonly StorageOptions _storageOptions = storageOptions.Value;
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -23,13 +19,8 @@ public class DailyFileGenerationWorker(
             try
             {
                 _logger.LogInformation("Starting daily file generation...");
-                var generatedPath = await _generator.GenerateDailyFileAsync();
-
-                if (!_storageOptions.UseMinio)
-                {
-                    DeleteOldZipFiles(generatedPath);
-                }
-
+                await _generator.GenerateDailyFileAsync(3);   // small
+                await _generator.GenerateDailyFileAsync(22);  // large
                 _logger.LogInformation("Daily file generation completed successfully.");
             }
             catch (Exception ex)
@@ -78,22 +69,6 @@ public class DailyFileGenerationWorker(
                 {
                     break;
                 }
-            }
-        }
-    }
-
-    private void DeleteOldZipFiles(string keepPath)
-    {
-        var files = Directory.GetFiles(_storageOptions.GeneratedFilesPath, "*.zip");
-        foreach (var file in files.Where(path => !string.Equals(path, keepPath, StringComparison.OrdinalIgnoreCase)))
-        {
-            try
-            {
-                File.Delete(file);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, "Failed deleting old zip file {FilePath}", file);
             }
         }
     }

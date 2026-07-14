@@ -18,4 +18,9 @@ public class StorageService(IBlobStorageService blobStorage) : IStorageService
     {
         return blobStorage.GetLatestFileNameAsync();
     }
+
+    public Task<bool> FileExistsAsync(string key)
+    {
+        return blobStorage.FileExistsAsync(key);
+    }
 }

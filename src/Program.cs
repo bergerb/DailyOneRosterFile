@@ -2,6 +2,7 @@ using DailyOneRosterFile.Api.BackgroundServices;
 using DailyOneRosterFile.Api.Interfaces;
 using DailyOneRosterFile.Api.Models;
 using DailyOneRosterFile.Api.Services;
+using FluentValidation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,8 @@ builder.Services.Configure<FileVariantOptions>(builder.Configuration.GetSection(
 builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
 builder.Services.AddSingleton<IStorageService, StorageService>();
 builder.Services.AddSingleton<IOneRosterFileGenerator, OneRosterFileGenerator>();
+builder.Services.AddScoped<IOneRosterValidator, OneRosterValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddHostedService<DailyFileGenerationWorker>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 

@@ -46,6 +46,23 @@ Create a new public-facing website that generates and provides a downloadable "O
     - [ ] Write integration test for the file generation worker.
     - [ ] Write integration test for the API endpoint.
     - [ ] Run tests in a CI/CD or local test environment.
+- [x] **OneRoster Validator Feature** (GitHub Issue #8)
+    - [x] Create `IOneRosterValidator` interface
+    - [x] Create `ValidationResult` model
+    - [x] Implement `OneRosterValidator` service with 4 validation checks
+    - [x] Add validation endpoints to `FilesController`
+    - [x] Register services in DI container
+    - [x] Write unit tests for validation logic
+    - [x] Update documentation
+- [ ] **Validation Tab with File Upload** (GitHub Issue #9)
+    - [ ] Add tab navigation component
+    - [ ] Refactor App.tsx to use tabbed layout
+    - [ ] Create file upload component with drag-and-drop
+    - [ ] Create validation results display component
+    - [ ] Add API integration for file upload
+    - [ ] Add loading states and error handling
+    - [ ] Add responsive styling
+    - [ ] Write frontend tests
 
 ## Notes
 - The project is a "OneRoster 1.1" generator.
@@ -57,3 +74,5 @@ Create a new public-facing website that generates and provides a downloadable "O
 - Files are stored in subfolder variants: `small/OneRoster.zip` and `large/OneRoster.zip`.
 - School counts are configurable via `FileVariant` section in `appsettings.json`.
 - A single token is valid for both variants; the variant is selected via `?variant=small` or `?variant=large` query parameter.
+- OneRoster Validator feature adds on-demand validation via API endpoint (see GitHub Issue #8 and design doc: `docs/superpowers/specs/2026-07-14-oneroster-validator-design.md`).
+- Validation Tab feature adds file upload UI with tabbed interface (see GitHub Issue #9).

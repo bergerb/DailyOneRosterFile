@@ -14,6 +14,21 @@
         "resolved": "33.1.0",
         "contentHash": "kqfTOZGrn7NarNeXgjh86JcpTHUoeQDMB8t9NVa/ZtlSYiV1rxfRnQ49WaJsob4AiGrbK0XDzpyKkBwai4F8eg=="
       },
+      "FluentValidation": {
+        "type": "Direct",
+        "requested": "[12.1.1, )",
+        "resolved": "12.1.1",
+        "contentHash": "EPpkIe1yh1a0OXyC100oOA8WMbZvqUu5plwhvYcb7oSELfyUZzfxV48BLhvs3kKo4NwG7MGLNgy1RJiYtT8Dpw=="
+      },
+      "FluentValidation.DependencyInjectionExtensions": {
+        "type": "Direct",
+        "requested": "[12.1.1, )",
+        "resolved": "12.1.1",
+        "contentHash": "D0VXh4dtjjX2aQizuaa0g6R8X3U1JaVqJPfGCvLwZX9t/O2h7tkpbitbadQMfwcgSPdDbI2vDxuwRMv/Uf9dHA==",
+        "dependencies": {
+          "FluentValidation": "12.1.1"
+        }
+      },
       "Minio": {
         "type": "Direct",
         "requested": "[7.0.0, )",

@@ -1,6 +1,7 @@
 using DailyOneRosterFile.Api.Attributes;
 using DailyOneRosterFile.Api.Interfaces;
 using DailyOneRosterFile.Api.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
@@ -8,7 +9,12 @@ namespace DailyOneRosterFile.Api.Controllers;
 
 [ApiController]
 [Route("api/files")]
-public class FilesController(IOptions<StorageOptions> storageOptions, ITokenService tokenService, IStorageService storage) : ControllerBase
+public class FilesController(
+    IOptions<StorageOptions> storageOptions,
+    ITokenService tokenService,
+    IStorageService storage,
+    IOneRosterValidator validator,
+    IValidator<UploadFileDto> uploadValidator) : ControllerBase
 {
     private readonly string _storagePath = storageOptions.Value.GeneratedFilesPath;
 
@@ -43,6 +49,21 @@ public class FilesController(IOptions<StorageOptions> storageOptions, ITokenServ
         byte[] bytes = await DownloadFileAsync(variant);
 
         return File(bytes, "application/zip", "OneRoster.zip");
+    }
+
+    [HttpPost("validate")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> ValidateOneRosterFile([FromForm] UploadFileDto dto)
+    {
+        var validationResult = await uploadValidator.ValidateAsync(dto);
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors.First().ErrorMessage);
+        }
+
+        using var stream = dto.File!.OpenReadStream();
+        var result = validator.Validate(stream);
+        return Ok(result);
     }
 
     #region Local Functions

@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
     <PackageReference Include="Minio" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
     <PackageReference Include="OneRosterSampleDataGenerator" Version="2.1.1-beta" />

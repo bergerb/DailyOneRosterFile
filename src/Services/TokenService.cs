@@ -1,5 +1,6 @@
 using DailyOneRosterFile.Api.Interfaces;
 using DailyOneRosterFile.Api.Models;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using System.Text;
@@ -15,7 +16,7 @@ public class TokenService(IOptions<StorageOptions> storageOptions) : ITokenServi
         var expiry = DateTimeOffset.UtcNow.AddMinutes(15).ToUnixTimeSeconds();
         var payload = $"{fileName}.{expiry}";
         var signature = ComputeSignature(payload);
-        var token = $"{Convert.ToBase64String(Encoding.UTF8.GetBytes(payload))}.{signature}";
+        var token = $"{WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(payload))}.{signature}";
         return token;
     }
 
@@ -26,7 +27,7 @@ public class TokenService(IOptions<StorageOptions> storageOptions) : ITokenServi
             var parts = token.Split('.');
             if (parts.Length != 2) return false;
 
-            var payload = Encoding.UTF8.GetString(Convert.FromBase64String(parts[0]));
+            var payload = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(parts[0]));
             var signature = parts[1];
 
             var separatorIndex = payload.LastIndexOf('.');
@@ -52,6 +53,6 @@ public class TokenService(IOptions<StorageOptions> storageOptions) : ITokenServi
         var keyBytes = Encoding.UTF8.GetBytes(_secret);
         using var hmac = new HMACSHA256(keyBytes);
         var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(payload));
-        return Convert.ToBase64String(hash);
+        return WebEncoders.Base64UrlEncode(hash);
     }
 }
